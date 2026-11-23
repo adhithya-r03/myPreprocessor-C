@@ -34,14 +34,12 @@ static void read_define(FILE *fp) {
     while ((ch = fgetc(fp)) == ' ' || ch == '\t');
     if (ch == EOF || ch == '\n') return;
 
-    /* Read macro name (stops at space or '(') */
     while (ch != EOF && ch != '\n' && ch != ' ' && ch != '\t' && ch != '(') {
         if (k < MAX_LEN - 1) m->name[k++] = (char)ch;
         ch = fgetc(fp);
     }
     m->name[k] = '\0';
 
-    /* Function-like macro if '(' immediately follows name */
     if (ch == '(') {
         m->is_func = 1;
         while (ch != EOF && ch != '\n' && ch != ')') {
@@ -67,7 +65,6 @@ static void read_define(FILE *fp) {
 
     while (ch == ' ' || ch == '\t') ch = fgetc(fp);
 
-    /* Read macro value until newline */
     k = 0;
     while (ch != EOF && ch != '\n') {
         if (k < MAX_LEN - 1) m->val[k++] = (char)ch;
@@ -94,7 +91,6 @@ static void expand_func_macro(mac *m, FILE *fp, FILE *fw, const char *orig) {
         return;
     }
 
-    /* Collect arguments up to matching ')' */
     while ((ch = fgetc(fp)) != EOF && depth > 0) {
         if (ch == '(') {
             depth++;
@@ -115,7 +111,6 @@ static void expand_func_macro(mac *m, FILE *fp, FILE *fw, const char *orig) {
         }
     }
 
-    /* Replace matching parameter names inside macro body */
     int i = 0;
     while (m->val[i] != '\0') {
         if (is_start((unsigned char)m->val[i])) {

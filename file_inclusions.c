@@ -78,7 +78,6 @@ void file_inclusion(FILE *fp, FILE *fw) {
                     ch = fgetc(fp);
                 }
             } else {
-                /* Preserve non-#include directives (like #define) for macro_handler */
                 fputc('#', fw);
                 fputs(s, fw);
                 if (ch != EOF) {
